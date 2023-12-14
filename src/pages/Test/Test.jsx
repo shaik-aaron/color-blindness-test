@@ -1,0 +1,26 @@
+import { useLocation } from "react-router-dom";
+
+export default function Test() {
+  const location = useLocation();
+
+  console.log(location.state);
+
+  return (
+    <>
+      <div style={{ marginTop: "24px", marginLeft: "18px" }}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="33"
+          height="33"
+          viewBox="0 0 33 33"
+          fill="none"
+        >
+          <path
+            d="M28 15.625H11.2662L18.9525 7.93875L17 6L6 17L17 28L18.9387 26.0613L11.2662 18.375H28V15.625Z"
+            fill="#000306"
+          />
+        </svg>
+      </div>
+    </>
+  );
+}

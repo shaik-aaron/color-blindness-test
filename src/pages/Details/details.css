@@ -1,0 +1,47 @@
+.spacing {
+  padding-left: 52px;
+  padding-right: 52px;
+}
+
+.label {
+  color: rgba(107, 107, 107, 0.59);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid rgba(159, 159, 159, 0.6);
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.input:focus-visible {
+  outline: none;
+  border-bottom: 2px solid rgba(159, 159, 159, 0.6);
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.submit {
+  display: flex;
+  width: 130px;
+  height: 42px;
+  padding: 0px 20px;
+  justify-content: center;
+  align-items: center;
+  background: black;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 30px;
+  margin-top: 136px;
+}
