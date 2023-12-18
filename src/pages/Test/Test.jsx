@@ -1,17 +1,99 @@
 import { useLocation } from "react-router-dom";
 import "./test.css";
 import { useState } from "react";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../firebase";
+import rolling from "../../assets/rolling.gif";
 
 export default function Test() {
   const location = useLocation();
   const [answers, setAnswers] = useState([]);
   const [answer, setAnswer] = useState("");
   const [index, setIndex] = useState(1);
+  const [optionsIndex, setOptionsIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  console.log(location.state);
+  const options = [
+    ["2", "nothing"],
+    ["6", "nothing"],
+    ["97", "nothing"],
+    ["45", "nothing"],
+    ["5", "nothing"],
+    ["7", "nothing"],
+    ["16", "nothing"],
+    ["73", "nothing"],
+    ["5", "nothing"],
+    ["2", "nothing"],
+    ["45", "nothing"],
+    ["73", "nothing"],
+    ["purple and red spots", "purple line", "red line"],
+    ["purple and red spots", "purple line", "red line"],
+    ["nothing", "a line"],
+    ["nothing", "a line"],
+    ["blue-green line", "nothing"],
+    ["blue-green line", "nothing"],
+    ["orange line", "nothing"],
+    ["orange line", "nothing"],
+    ["blue-green line", "red-green violet line"],
+    ["blue-green line", "blue-green violet line"],
+    ["violet-orange line", "blue-green violet line"],
+  ];
   console.log(answers);
 
-  function CheckIfPattern() {}
+  function CheckIfPattern() {
+    if ((index >= 10 && index <= 21) || (index >= 26 && index <= 36)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function handleDecrement() {
+    setSelectedOption("");
+    if (index > 1) {
+      setAnswers((prev) => {
+        let temp = [];
+        prev.map((item, index) => {
+          if (index !== prev.length - 1) {
+            temp.push(item);
+          }
+        });
+        return temp;
+      });
+      if (CheckIfPattern() && optionsIndex > 0 && index !== 26) {
+        setOptionsIndex((prev) => prev - 1);
+      }
+      if (index === 22) {
+        setOptionsIndex((prev) => prev - 1);
+      }
+      setIndex((prev) => prev - 1);
+    }
+  }
+
+  function handleIncrement() {
+    setSelectedOption("");
+    setAnswers([...answers, String(answer)]);
+    setAnswer("");
+    if (CheckIfPattern() && optionsIndex < options.length - 1) {
+      setOptionsIndex((prev) => prev + 1);
+    }
+    setIndex((prev) => prev + 1);
+  }
+
+  async function handleSubmit() {
+    try {
+      setLoading((prev) => !prev);
+      await addDoc(collection(db, "users"), {
+        name: location.state.name,
+        age: location.state.age,
+        answers: [...answers, answer],
+      });
+      setLoading((prev) => !prev);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <>
@@ -42,42 +124,48 @@ export default function Test() {
         <p style={{ fontWeight: "500", color: "#6F6F6F", marginTop: "28px" }}>
           Enter what you see
         </p>
-        <input
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          className="answer"
-          type="number"
-        />
+        {CheckIfPattern() ? (
+          options[optionsIndex].map((value) => {
+            return (
+              <div className="flex-options">
+                <input
+                  checked={selectedOption === value}
+                  onChange={(e) => {
+                    setSelectedOption(e.target.value);
+                    setAnswer(e.target.value);
+                  }}
+                  type="radio"
+                  value={value}
+                />
+                <p>{value}</p>
+              </div>
+            );
+          })
+        ) : (
+          <input
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            className="answer"
+            type="number"
+          />
+        )}
         <div className="actions">
-          <button
-            onClick={() => {
-              if (index > 1) {
-                setAnswers((prev) => {
-                  let temp = [];
-                  prev.map((item, index) => {
-                    if (index !== prev.length - 1) {
-                      temp.push(item);
-                    }
-                  });
-                  return temp;
-                });
-                setIndex((prev) => prev - 1);
-              }
-            }}
-            className="previous"
-          >
+          <button onClick={() => handleDecrement()} className="previous">
             Previous
           </button>
-          <button
-            onClick={() => {
-              setAnswers([...answers, String(answer)]);
-              setAnswer("");
-              setIndex((prev) => prev + 1);
-            }}
-            className="next"
-          >
-            Next
-          </button>
+          {index === 36 ? (
+            <button onClick={() => handleSubmit()} className="next">
+              {loading ? (
+                <img width={16} height={16} src={rolling} />
+              ) : (
+                "Submit"
+              )}
+            </button>
+          ) : (
+            <button onClick={() => handleIncrement()} className="next">
+              Next
+            </button>
+          )}
         </div>
       </div>
     </>

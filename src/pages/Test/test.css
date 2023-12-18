@@ -62,3 +62,10 @@
   font-weight: 600;
   color: white;
 }
+
+.flex-options {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+}
