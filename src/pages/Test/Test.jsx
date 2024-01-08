@@ -1,6 +1,6 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./test.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../firebase";
 import rolling from "../../assets/rolling.gif";
@@ -13,6 +13,9 @@ export default function Test() {
   const [optionsIndex, setOptionsIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const input = useRef(null);
+  const navigate = useNavigate();
 
   const options = [
     ["2", "nothing"],
@@ -39,6 +42,46 @@ export default function Test() {
     ["blue-green line", "blue-green violet line"],
     ["violet-orange line", "blue-green violet line"],
   ];
+
+  const correctAnswers = [
+    "12",
+    "8",
+    "6",
+    "29",
+    "57",
+    "5",
+    "3",
+    "15",
+    "74",
+    "2",
+    "6",
+    "97",
+    "45",
+    "5",
+    "7",
+    "16",
+    "73",
+    "nothing",
+    "nothing",
+    "nothing",
+    "nothing",
+    "26",
+    "42",
+    "35",
+    "96",
+    "purple and red spots",
+    "purple and red spots",
+    "nothing",
+    "nothing",
+    "blue-green line",
+    "blue-green line",
+    "orange line",
+    "orange line",
+    "blue-green line",
+    "blue-green line",
+    "violet-orange line",
+  ];
+
   console.log(answers);
 
   function CheckIfPattern() {
@@ -69,25 +112,63 @@ export default function Test() {
       }
       setIndex((prev) => prev - 1);
     }
+    if (input.current) {
+      input.current.focus();
+    }
   }
 
   function handleIncrement() {
     setSelectedOption("");
-    setAnswers([...answers, String(answer)]);
+    setAnswers([
+      ...answers,
+      {
+        questionID: index,
+        correctAnswer: correctAnswers[index - 1],
+        givenAnswer: answer,
+      },
+    ]);
     setAnswer("");
     if (CheckIfPattern() && optionsIndex < options.length - 1) {
       setOptionsIndex((prev) => prev + 1);
+    }
+    if (input.current) {
+      input.current.focus();
     }
     setIndex((prev) => prev + 1);
   }
 
   async function handleSubmit() {
+    let correctCount = 0;
+    console.log(index);
+    console.log(correctAnswers[index - 1]);
+
+    let finalAnswers = [
+      ...answers,
+      {
+        questionID: index,
+        correctAnswer: correctAnswers[index - 1],
+        givenAnswer: answer,
+      },
+    ];
+
+    for (let i = 0; i < finalAnswers.length; i++) {
+      if (finalAnswers[i].givenAnswer === finalAnswers[i].correctAnswer) {
+        correctCount++;
+      }
+    }
+
+    console.log(correctCount);
+
+    console.log(finalAnswers);
+    console.log(correctAnswers);
+
     try {
       setLoading((prev) => !prev);
       await addDoc(collection(db, "users"), {
         name: location.state.name,
         age: location.state.age,
-        answers: [...answers, answer],
+        answers: finalAnswers,
+        totalCorrect: correctCount,
       });
       setLoading((prev) => !prev);
     } catch (error) {
@@ -98,18 +179,20 @@ export default function Test() {
   return (
     <>
       <div style={{ marginTop: "24px", marginLeft: "18px" }}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="33"
-          height="33"
-          viewBox="0 0 33 33"
-          fill="none"
-        >
-          <path
-            d="M28 15.625H11.2662L18.9525 7.93875L17 6L6 17L17 28L18.9387 26.0613L11.2662 18.375H28V15.625Z"
-            fill="#000306"
-          />
-        </svg>
+        <div onClick={() => navigate(-1)} role="button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="33"
+            height="33"
+            viewBox="0 0 33 33"
+            fill="none"
+          >
+            <path
+              d="M28 15.625H11.2662L18.9525 7.93875L17 6L6 17L17 28L18.9387 26.0613L11.2662 18.375H28V15.625Z"
+              fill="#000306"
+            />
+          </svg>
+        </div>
       </div>
       <div className="test-container">
         <p className="test">Color Blindness Test</p>
@@ -121,13 +204,27 @@ export default function Test() {
           height={323}
         />
         <p style={{ fontWeight: "600", marginTop: "18px" }}>{`${index}/36`}</p>
-        <p style={{ fontWeight: "500", color: "#6F6F6F", marginTop: "28px" }}>
+        <p
+          style={{
+            fontWeight: "500",
+            color: "#6F6F6F",
+            marginTop: "28px",
+            marginBottom: "14px",
+          }}
+        >
           Enter what you see
         </p>
         {CheckIfPattern() ? (
           options[optionsIndex].map((value) => {
             return (
-              <div className="flex-options">
+              <div
+                key={value}
+                onClick={() => {
+                  setSelectedOption(value);
+                  setAnswer(value);
+                }}
+                className="flex-options"
+              >
                 <input
                   checked={selectedOption === value}
                   onChange={(e) => {
@@ -143,10 +240,12 @@ export default function Test() {
           })
         ) : (
           <input
+            autoFocus
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             className="answer"
             type="number"
+            ref={input}
           />
         )}
         <div className="actions">
@@ -162,7 +261,11 @@ export default function Test() {
               )}
             </button>
           ) : (
-            <button onClick={() => handleIncrement()} className="next">
+            <button
+              onClick={() => handleIncrement()}
+              className="next"
+              disabled={answer === ""}
+            >
               Next
             </button>
           )}
