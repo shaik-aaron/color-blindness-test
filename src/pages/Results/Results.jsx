@@ -5,9 +5,11 @@ import check from "../../assets/checkCircle.svg";
 import warning from "../../assets/warning.svg";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export default function Results() {
   const [results, setResults] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -16,8 +18,9 @@ export default function Results() {
         const temp = [];
 
         snapshot.forEach((doc) => {
+          let id = doc.id;
           const { name, totalCorrect } = doc.data();
-          temp.push({ name, totalCorrect });
+          temp.push({ name, totalCorrect, id });
         });
         setResults(temp);
       } catch (error) {
@@ -39,6 +42,10 @@ export default function Results() {
         {results.map((result) => {
           return (
             <div
+              onClick={() =>
+                navigate(`/${result.id}`, { state: { id: result.id } })
+              }
+              key={result.id}
               style={{
                 background: result.totalCorrect === 36 ? "" : "#D9D9D9",
               }}
