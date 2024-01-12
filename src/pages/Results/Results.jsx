@@ -77,6 +77,9 @@ export default function Results() {
           );
         })}
       </div>
+      <div className="download-container">
+        <button className="download-all">Download all results</button>
+      </div>
     </>
   );
 }

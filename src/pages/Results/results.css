@@ -71,3 +71,25 @@
   font-weight: 400;
   text-align: right;
 }
+
+.download-container {
+  padding: 24px;
+  position: fixed;
+  bottom: 0;
+  background: rgba(242, 242, 242, 0.5);
+  backdrop-filter: blur(4px);
+  width: 100%;
+}
+
+.download-all {
+  background: #000;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 110px;
+  border-radius: 15px;
+}

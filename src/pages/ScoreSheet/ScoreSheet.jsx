@@ -47,6 +47,11 @@ export default function ScoreSheet() {
           })}
         </div>
       </div>
+      <div className="download-container">
+        <button className="download-all">
+          Download excel for this candidate
+        </button>
+      </div>
     </>
   );
 }
