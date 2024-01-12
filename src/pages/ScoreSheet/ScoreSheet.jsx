@@ -1,6 +1,6 @@
 import "./scoresheet.css";
 import back from "../../assets/arrowBack.svg";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
@@ -8,6 +8,7 @@ import { db } from "../../firebase";
 export default function ScoreSheet() {
   const { id } = useParams();
   const [data, setData] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -27,7 +28,7 @@ export default function ScoreSheet() {
   return (
     <>
       <div className="nav-container">
-        <img src={back} />
+        <img src={back} onClick={() => navigate(-1)} />
         <p className="results">{data?.name}</p>
       </div>
       <div className="main-container">
