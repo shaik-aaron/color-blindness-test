@@ -200,10 +200,7 @@ export default function Test() {
       </div>
       <div className="test-container">
         <p className="test">Color Blindness Test</p>
-        <ProgressiveImage
-          src={images[index - 1]}
-          placeholder={<img width={16} height={16} src={rolling} />}
-        >
+        <ProgressiveImage src={images[index - 1]} placeholder={rolling}>
           {(src, loading) => (
             <img
               alt="Ishihara plate"
