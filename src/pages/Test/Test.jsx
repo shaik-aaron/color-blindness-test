@@ -13,6 +13,7 @@ export default function Test() {
   const [optionsIndex, setOptionsIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [loading, setLoading] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const input = useRef(null);
   const navigate = useNavigate();
@@ -164,6 +165,7 @@ export default function Test() {
 
     try {
       setLoading((prev) => !prev);
+      setDisableSubmit((prev) => !prev);
       await addDoc(collection(db, "users"), {
         name: location.state.name,
         age: location.state.age,
@@ -253,7 +255,11 @@ export default function Test() {
             Previous
           </button>
           {index === 36 ? (
-            <button onClick={() => handleSubmit()} className="next">
+            <button
+              disabled={disableSubmit}
+              onClick={() => handleSubmit()}
+              className="next"
+            >
               {loading ? (
                 <img width={16} height={16} src={rolling} />
               ) : (
