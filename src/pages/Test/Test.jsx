@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import ProgressiveImage from "react-progressive-graceful-image";
 import "./test.css";
 import { useRef, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
@@ -199,13 +200,20 @@ export default function Test() {
       </div>
       <div className="test-container">
         <p className="test">Color Blindness Test</p>
-        <img
-          alt="Ishihara plat"
-          className="plate"
+        <ProgressiveImage
           src={images[index - 1]}
-          width={323}
-          height={323}
-        />
+          placeholder={<img width={16} height={16} src={rolling} />}
+        >
+          {(src, loading) => (
+            <img
+              alt="Ishihara plate"
+              className="plate"
+              src={src}
+              width={323}
+              height={323}
+            />
+          )}
+        </ProgressiveImage>
         <p style={{ fontWeight: "600", marginTop: "18px" }}>{`${index}/36`}</p>
         <p
           style={{
