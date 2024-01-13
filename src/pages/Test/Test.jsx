@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../firebase";
 import rolling from "../../assets/rolling.gif";
+import { images } from "../../images";
 
 export default function Test() {
   const location = useLocation();
@@ -201,7 +202,7 @@ export default function Test() {
         <img
           alt="Ishihara plat"
           className="plate"
-          src={`/src/assets/plates/${index}.png`}
+          src={images[index - 1]}
           width={323}
           height={323}
         />
