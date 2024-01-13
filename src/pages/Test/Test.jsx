@@ -207,8 +207,8 @@ export default function Test() {
               alt="Ishihara plate"
               className="plate"
               src={src}
-              width={323}
-              height={323}
+              width={loading ? 50 : 323}
+              height={loading ? 50 : 323}
             />
           )}
         </ProgressiveImage>
