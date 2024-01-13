@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../firebase";
 import rolling from "../../assets/rolling.gif";
+import rollingBlock from "../../assets/rolling-black.gif";
 import { images } from "../../images";
 
 export default function Test() {
@@ -200,7 +201,7 @@ export default function Test() {
       </div>
       <div className="test-container">
         <p className="test">Color Blindness Test</p>
-        <ProgressiveImage src={images[index - 1]} placeholder={rolling}>
+        <ProgressiveImage src={images[index - 1]} placeholder={rollingBlock}>
           {(src, loading) => (
             <img
               alt="Ishihara plate"
